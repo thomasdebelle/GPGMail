@@ -26,13 +26,6 @@
 			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = Libmacgpg;
 		};
-		305355061920FE97006C1D39 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 305354FC1920FE97006C1D39 /* Libmacgpg.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 30C8B38E139503A800F49AA1;
-			remoteInfo = UnitTest;
-		};
 		305355081920FE97006C1D39 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 305354FC1920FE97006C1D39 /* Libmacgpg.xcodeproj */;
@@ -60,6 +53,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = Libmacgpg;
+		};
+		306234DE1BB49F9000FDA3B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 305354FC1920FE97006C1D39 /* Libmacgpg.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 30BE73BE1B54015C001A2137;
+			remoteInfo = UnitTests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -114,7 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				305355051920FE97006C1D39 /* Libmacgpg.framework */,
-				305355071920FE97006C1D39 /* UnitTest.octest */,
+				306234DF1BB49F9000FDA3B0 /* UnitTests.xctest */,
 				305355091920FE97006C1D39 /* org.gpgtools.Libmacgpg.xpc */,
 				3053550D1920FE97006C1D39 /* LeakFinder.app */,
 				3053550B1920FE97006C1D39 /* GPGTools.app */,
@@ -253,13 +253,6 @@
 			remoteRef = 305355041920FE97006C1D39 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		305355071920FE97006C1D39 /* UnitTest.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = UnitTest.octest;
-			remoteRef = 305355061920FE97006C1D39 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		305355091920FE97006C1D39 /* org.gpgtools.Libmacgpg.xpc */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
@@ -279,6 +272,13 @@
 			fileType = wrapper.application;
 			path = LeakFinder.app;
 			remoteRef = 3053550C1920FE97006C1D39 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		306234DF1BB49F9000FDA3B0 /* UnitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = UnitTests.xctest;
+			remoteRef = 306234DE1BB49F9000FDA3B0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -429,6 +429,7 @@
 					"$(SRCROOT)/Dependencies/Libmacgpg/build/$(CONFIGURATION)/Libmacgpg.framework/Headers",
 				);
 				INFOPLIST_FILE = "GPGMail_Updater/GPGMail_Updater-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(HOME)/Library/Containers/com.apple.mail/Data/Library/Frameworks $(HOME)/Library/Frameworks /Library/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -456,6 +457,7 @@
 					"$(SRCROOT)/Dependencies/Libmacgpg/build/$(CONFIGURATION)/Libmacgpg.framework/Headers",
 				);
 				INFOPLIST_FILE = "GPGMail_Updater/GPGMail_Updater-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "/Library/Frameworks $(HOME)/Library/Frameworks $(HOME)/Library/Containers/com.apple.mail/Data/Library/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
