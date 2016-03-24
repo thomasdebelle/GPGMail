@@ -214,6 +214,7 @@ publicKeyMap = _publicKeyMap, groups = _groups, allSecretKeys = _allSecretKeys, 
 - (void)rebuildSecretKeysCache {
 	NSMutableSet *allSecretKeys = [[NSMutableSet alloc]  init];
 	
+
 	NSSet *secretKeys = [[[GPGKeyManager sharedInstance] allKeys] filter:^id (GPGKey *key) {
 		// Only either the key or one of the subkeys has to be valid,
 		// non-expired, non-disabled, non-revoked and be used for signing.
@@ -225,6 +226,10 @@ publicKeyMap = _publicKeyMap, groups = _groups, allSecretKeys = _allSecretKeys, 
 		
 		return nil;
 	}];
+	
+	DebugLog(@"allSecretKeys: %@", allSecretKeys);
+	DebugLog(@"secretKeys: %@", secretKeys);
+
 	self.secretKeys = secretKeys;
 	self.allSecretKeys = allSecretKeys;
 }
@@ -358,6 +363,8 @@ publicKeyMap = _publicKeyMap, groups = _groups, allSecretKeys = _allSecretKeys, 
 		}
 	}
 	
+	DebugLog(@"secretKeysByEmail: %@", map);
+	
 	self.secretKeysByEmail = map;
 }
 
@@ -490,32 +497,52 @@ publicKeyMap = _publicKeyMap, groups = _groups, allSecretKeys = _allSecretKeys, 
     for (id identifier in map) {
         if ([identifier isKindOfClass:regexClass] ? [allAdresses isMatchedByRegex:identifier] : [addresses containsObject:identifier]) {
 			id object = map[identifier];
-			if([object isKindOfClass:setClass])
+			if([object isKindOfClass:setClass]) {
 				[keys addObjectsFromArray:[object allObjects]];
-			else if([object isKindOfClass:arrayClass])
+			} else if([object isKindOfClass:arrayClass]) {
 				[keys addObjectsFromArray:object];
-			else
+			} else {
 				[keys addObject:object];
+			}
 			
-            if (stop)
+			if (stop) {
 				break;
+			}
         }
     }
+	
+	DebugLog(@"%@ keysForAddresses: %@ = %@", onlySecret ? @"secret" : @"public", addresses, keys);
+	
     return keys;
 }
 
 - (GPGKey *)findKeyByHint:(NSString *)hint onlySecret:(BOOL)onlySecret {
     GPGKey *foundKey = nil;
-    if(!hint)
+	if (hint.length == 0) {
         return nil;
-    
+	}
+	
     NSSet *keys = onlySecret ? _secretKeys : _publicKeys;
     for (GPGKey *key in keys) {
-        if([key.textForFilter rangeOfString:hint].location != NSNotFound) {
+        if ([key.textForFilter rangeOfString:hint options:NSCaseInsensitiveSearch].location != NSNotFound) {
             foundKey = key;
             break;
         }
     }
+	
+	if (foundKey && (hint.length & 7) == 0 && [foundKey.fingerprint rangeOfString:hint].location == NSNotFound) {
+		// Only check subkey fingerprints if a key is found and the hint looks like a keyID/fingerprint and the hint is not in the key's fingerprint.
+		
+		for (GPGKey *subkey in foundKey.subkeys) {
+			if ([subkey.fingerprint rangeOfString:hint options:NSCaseInsensitiveSearch | NSAnchoredSearch].location != NSNotFound) {
+				foundKey = subkey;
+				break;
+			}
+		}
+	}
+	
+	
+	
     return foundKey;
 }
 
@@ -544,7 +571,8 @@ publicKeyMap = _publicKeyMap, groups = _groups, allSecretKeys = _allSecretKeys, 
     if (needWrite) {
         [options setValueInCommonDefaults:mappedKeys forKey:@"KeyMapping"];
     }
-    
+	
+	
 	Class stringClass = [NSString class];
 	Class arrayClass = [NSArray class];
     
@@ -577,7 +605,11 @@ publicKeyMap = _publicKeyMap, groups = _groups, allSecretKeys = _allSecretKeys, 
         if (object)
             cleanMappedKeys[pattern] = object;
     }
-    
+	
+	DebugLog(@"%@ KeyMapping: %@", secretOnly ? @"secret" : @"public", mappedKeys);
+	DebugLog(@"%@ cleanMappedKeys: %@", secretOnly ? @"secret" : @"public", cleanMappedKeys);
+
+
     return cleanMappedKeys;
 }
 
